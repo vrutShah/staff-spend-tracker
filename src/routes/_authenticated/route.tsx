@@ -6,7 +6,7 @@ import {
   LayoutDashboard, ArrowLeftRight, BookOpen, HandCoins, Truck,
   Landmark, FileBarChart, Tags, Settings, LogOut, Wallet, Menu,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -37,6 +37,11 @@ function AppShell() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+
+  const needsSetup = !isLoading && !data?.company && pathname !== "/setup";
+  useEffect(() => {
+    if (needsSetup) navigate({ to: "/setup", replace: true });
+  }, [needsSetup, navigate]);
 
   if (isLoading) {
     return (
