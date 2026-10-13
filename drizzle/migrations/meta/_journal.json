@@ -15,6 +15,13 @@
       "when": 1791881640265,
       "tag": "0001_receipts_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791882635693,
+      "tag": "0002_allow_company_creator_read",
+      "breakpoints": true
     }
   ]
 }

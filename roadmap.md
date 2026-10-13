@@ -1,18 +1,11 @@
-# Company Expense Manager — Build Roadmap
+# Roadmap — Company Expense Manager
 
-- [x] Enable Lovable Cloud + email auth
-- [ ] Database schema: companies, memberships, profiles, accounts, categories, employees, vendors, invoices, payments, advances, settlements, transactions, attachments, audit logs + RLS + grants
-- [ ] Private storage bucket for receipts + storage RLS
-- [ ] Auth pages (login/signup/reset) + company setup wizard
-- [ ] App shell with navigation (Dashboard, Transactions, Cash Book, Advances, Vendors, Accounts, Reports, Categories, Settings)
-- [ ] Dashboard with live balances (₹, Indian formatting)
-- [ ] Transaction entry form (dynamic per type) + list/search/filter + reversal (no deletes)
-- [ ] Cash Book (Money In/Out, running balance)
-- [ ] Staff Advances (partial settlements, statuses)
-- [ ] Vendors & invoices (partial payments, payables)
-- [ ] Accounts (cash/bank, transfers, opening balances)
-- [ ] Reports: date ranges, filters, opening/closing balances
-- [ ] Exports: CSV, Excel-compatible, PDF, print
-- [ ] Categories management (defaults + custom)
-- [ ] Receipt upload/download (private bucket)
-- [ ] Verify end-to-end with test data; final checklist
+- [x] Enable Lovable Cloud + email/Google sign-in
+- [x] Database schema: companies, memberships, accounts, categories, transactions, advances, vendors, invoices, attachments, audit log (RLS + grants)
+- [x] Private receipts storage bucket + policies
+- [x] Auth pages, setup wizard, authenticated shell
+- [x] Dashboard, Transactions, Cash Book, Advances, Vendors, Accounts, Categories, Settings, Reports
+- [x] CSV / Excel / print-PDF exports
+- [x] Fix: creator can read company right after insert (migration 0002)
+- [x] Verified: signup → email confirm → sign in → setup wizard → opening balances saved and shown
+- [ ] Remaining verification: add expense/income, cash book running balance, date-range reports, export downloads
