@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/advances")({
   head: () => ({ meta: [{ title: "Staff Advances — Company Expense Manager" }] }),
@@ -286,7 +286,7 @@ function SettleDialog({ companyId, advance, remaining, open, onOpenChange, onDon
       });
       if (sErr) throw sErr;
 
-      const txns: Tables<"transactions">["Insert"][] = [];
+      const txns: TablesInsert<"transactions">[] = [];
       if (b > 0) {
         txns.push({
           company_id: companyId, type: "advance_settlement", txn_date: date, amount: b,
