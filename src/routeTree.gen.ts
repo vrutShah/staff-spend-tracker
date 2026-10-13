@@ -18,6 +18,7 @@ import { Route as AuthenticatedAdvancesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCashBookRouteImport } from './routes/_authenticated/cash-book'
 import { Route as AuthenticatedCategoriesRouteImport } from './routes/_authenticated/categories'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSetupRouteImport } from './routes/_authenticated/setup'
 import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
@@ -67,6 +68,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/cash-book': typeof AuthenticatedCashBookRoute
   '/categories': typeof AuthenticatedCategoriesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/setup': typeof AuthenticatedSetupRoute
   '/transactions': typeof AuthenticatedTransactionsRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/cash-book': typeof AuthenticatedCashBookRoute
   '/categories': typeof AuthenticatedCategoriesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/setup': typeof AuthenticatedSetupRoute
   '/transactions': typeof AuthenticatedTransactionsRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/_authenticated/cash-book': typeof AuthenticatedCashBookRoute
   '/_authenticated/categories': typeof AuthenticatedCategoriesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/setup': typeof AuthenticatedSetupRoute
   '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/cash-book'
     | '/categories'
     | '/dashboard'
+    | '/reports'
     | '/settings'
     | '/setup'
     | '/transactions'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/cash-book'
     | '/categories'
     | '/dashboard'
+    | '/reports'
     | '/settings'
     | '/setup'
     | '/transactions'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cash-book'
     | '/_authenticated/categories'
     | '/_authenticated/dashboard'
+    | '/_authenticated/reports'
     | '/_authenticated/settings'
     | '/_authenticated/setup'
     | '/_authenticated/transactions'
@@ -251,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -288,6 +307,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCashBookRoute: typeof AuthenticatedCashBookRoute
   AuthenticatedCategoriesRoute: typeof AuthenticatedCategoriesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSetupRoute: typeof AuthenticatedSetupRoute
   AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRoute
@@ -300,6 +320,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCashBookRoute: AuthenticatedCashBookRoute,
   AuthenticatedCategoriesRoute: AuthenticatedCategoriesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSetupRoute: AuthenticatedSetupRoute,
   AuthenticatedTransactionsRoute: AuthenticatedTransactionsRoute,
