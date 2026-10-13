@@ -8,6 +8,13 @@
       "when": 1791881614316,
       "tag": "0000_initial_expense_manager_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791881640265,
+      "tag": "0001_receipts_storage_policies",
+      "breakpoints": true
     }
   ]
 }
