@@ -1,0 +1,2 @@
+drop policy if exists "Members read company" on public.companies;
+create policy "Members or creator read company" on public.companies for select to authenticated using (public.is_company_member(id) or auth.uid() = created_by);
