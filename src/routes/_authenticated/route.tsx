@@ -51,11 +51,8 @@ function AppShell() {
     );
   }
 
-  // First-run: no company yet -> setup wizard
-  if (!data?.company && pathname !== "/setup") {
-    navigate({ to: "/setup", replace: true });
-    return null;
-  }
+  // First-run: no company yet -> setup wizard (redirect handled in effect above)
+  if (needsSetup) return null;
 
   const signOut = async () => {
     await supabase.auth.signOut();
