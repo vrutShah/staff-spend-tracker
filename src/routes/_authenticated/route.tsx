@@ -78,7 +78,7 @@ function AppShell() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Toaster richColors position="top-right" />
+      
       {/* Sidebar (desktop) */}
       <aside className="hidden w-60 flex-col border-r bg-card md:flex">
         <div className="flex items-center gap-2 border-b p-4">
