@@ -14,7 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Paperclip } from "lucide-react";
+import { Plus, Paperclip, Pencil, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/components/TransactionForm";
 import { toast } from "sonner";
 
@@ -32,6 +32,26 @@ function TransactionsPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [voidTarget, setVoidTarget] = useState<Txn | null>(null);
   const [voidReason, setVoidReason] = useState("");
+  const [editTarget, setEditTarget] = useState<Txn | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Txn | null>(null);
+
+  const deleteTxn = async () => {
+    if (!deleteTarget) return;
+    const id = deleteTarget.id;
+    // Unlink records that reference this transaction, remove receipts, then delete
+    await supabase.from("staff_advances").update({ transaction_id: null }).eq("transaction_id", id);
+    await supabase.from("vendor_payments").update({ transaction_id: null }).eq("transaction_id", id);
+    const atts = attachments?.filter((a) => a.record_type === "transaction" && a.record_id === id) ?? [];
+    if (atts.length) {
+      await supabase.storage.from("receipts").remove(atts.map((a) => a.file_path));
+      await supabase.from("attachments").delete().in("id", atts.map((a) => a.id));
+    }
+    const { error } = await supabase.from("transactions").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Transaction deleted.");
+    setDeleteTarget(null);
+    qc.invalidateQueries();
+  };
 
   const { data: txns } = useQuery({
     queryKey: ["transactions", companyId],
@@ -139,6 +159,8 @@ function TransactionsPage() {
                       {t.status === "posted" && (
                         <Button variant="ghost" size="sm" onClick={() => setVoidTarget(t)}>Reverse</Button>
                       )}
+                      <Button variant="ghost" size="icon" title="Edit" onClick={() => setEditTarget(t)}><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" title="Delete" onClick={() => setDeleteTarget(t)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                     </TableCell>
                   </TableRow>
                 );
@@ -149,6 +171,22 @@ function TransactionsPage() {
       </Card>
 
       {companyId && <TransactionForm companyId={companyId} open={addOpen} onOpenChange={setAddOpen} />}
+      {companyId && <TransactionForm companyId={companyId} open={!!editTarget} onOpenChange={(v) => !v && setEditTarget(null)} editTxn={editTarget} />}
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this transaction permanently?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The transaction of {deleteTarget && inr(deleteTarget.amount)} and its receipt will be removed. A copy stays in the audit history.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={deleteTxn} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={!!voidTarget} onOpenChange={(v) => !v && setVoidTarget(null)}>
         <AlertDialogContent>
