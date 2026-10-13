@@ -34,7 +34,9 @@ export function TransactionForm({
   open,
   onOpenChange,
   presetType,
+  editTxn,
 }: {
+  editTxn?: Tables<"transactions"> | null;
   companyId: string;
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -58,14 +60,21 @@ export function TransactionForm({
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (open) {
+    if (open && editTxn) {
+      const t = editTxn;
+      setType(t.type); setDate(t.txn_date); setAmount(String(t.amount));
+      setCategoryId(t.category_id ?? ""); setDescription(t.description ?? ""); setCounterparty(t.counterparty ?? "");
+      setEmployeeId(t.employee_id ?? ""); setVendorId(t.vendor_id ?? ""); setAccountId(t.account_id ?? "");
+      setTransferAccountId(t.transfer_account_id ?? ""); setMethod(t.payment_method ?? "");
+      setReferenceNo(t.reference_no ?? ""); setNotes(t.notes ?? ""); setFile(null);
+    } else if (open) {
       setType(presetType ?? "expense");
       setDate(todayISO());
       setAmount(""); setCategoryId(""); setDescription(""); setCounterparty("");
       setEmployeeId(""); setVendorId(""); setAccountId(""); setTransferAccountId("");
       setMethod(""); setReferenceNo(""); setNotes(""); setFile(null);
     }
-  }, [open, presetType]);
+  }, [open, presetType, editTxn]);
 
   const { data: lookups } = useQuery({
     queryKey: ["txn-lookups", companyId],
@@ -103,9 +112,7 @@ export function TransactionForm({
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      const { data: txn, error } = await supabase
-        .from("transactions")
-        .insert({
+      const payload = {
           company_id: companyId,
           type: type as Tables<"transactions">["type"],
           txn_date: date,
@@ -120,10 +127,10 @@ export function TransactionForm({
           payment_method: method || null,
           reference_no: referenceNo.trim() || null,
           notes: notes.trim() || null,
-          created_by: user?.id ?? null,
-        })
-        .select()
-        .single();
+        };
+      const { data: txn, error } = editTxn
+        ? await supabase.from("transactions").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editTxn.id).select().single()
+        : await supabase.from("transactions").insert({ ...payload, created_by: user?.id ?? null }).select().single();
       if (error) throw error;
 
       if (file) {
@@ -144,7 +151,7 @@ export function TransactionForm({
       }
 
       await qc.invalidateQueries();
-      toast.success("Transaction saved.");
+      toast.success(editTxn ? "Transaction updated." : "Transaction saved.");
       onOpenChange(false);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not save the transaction.");
@@ -157,7 +164,7 @@ export function TransactionForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Transaction</DialogTitle>
+          <DialogTitle>{editTxn ? "Edit Transaction" : "Add Transaction"}</DialogTitle>
           <DialogDescription>Only the fields needed for the selected type are shown.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
